@@ -35,4 +35,7 @@ int mismoEnlace(enlace * e, enlace * h);
 // Libera toda una lista de enlaces
 void liberaEnlaces(enlace ** pe);
 
+// Libera un enlace individual
+void liberaEnlace(enlace ** pe);
+
 #endif

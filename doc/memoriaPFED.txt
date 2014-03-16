@@ -1,1 +1,127 @@
-{"url": "https://docs.google.com/document/d/1oX-skaMTh2eN92WL3mp8_n9e1w38QtqDOULlcmJKFWI/edit?usp=docslist_api", "resource_id": "document:1oX-skaMTh2eN92WL3mp8_n9e1w38QtqDOULlcmJKFWI"}
+Proyecto Final de Estructuras Dinámicas
+Realizada por Marcos Bjorkelund, del grupo 1 de Primero del Grado en Ingeniería de Tecnologías de Telecomunicación.
+
+El programa tiene 6 ficheros .c y otros 6 .h, de forma que se relaciona uno a otro.
+
+Una breve introducción antes de explicar a fondo cada uno de ellos:
+-principal.c:	Contiene la función main(), y en esta se usan las funciones correspondientes para realizar las
+		comprobaciones necesarias, y en el caso de todo ir bien realizar el cálculo de camino mínimo.
+-nodos.c:	En este se encuentran las funciones que se usarán para trabajar con nodos (abstractos).
+-enlaces.c:	En este se encuentran las funciones que se usarán para trabajar con enlaces (abstractos).
+-miscelaneos.c:	Contiene funciones para simplificar el código de demás ficheros que es repetitivo y largo.
+-io.c:		Contiene todas las funciones relacionadas a la entrada y salida (lectura y escritura).
+-calculo.c:	Contiene todas las funciones que tratan el cálculo del camino mínimo entre dos IPs.
+
+Los archivos cabecera .h se explicarán más adelante en el caso de que sea especial (no contenga únicamente
+declaración de prototipos de funciones y definición de constantes que no necesiten demasiadas aclaraciones).
+
+Ya que queda claro qué hace cada archivo, expliquemos un poco más a fondo el funcionamiento individual de cada uno.
+
+---------------------------------
+- principal.c                   -
+---------------------------------
+Para empezar, el fichero principal.c contiene la función main(), que es donde realizamos todas las comprobaciones
+oportunas y luego se realiza el cálculo del camino óptimo.
+
+Como variables a destacar, está el de la lista de nodos, el nodo inicial, el final y la lista de enlaces.
+
+Estas son, en orden:
+1) Comprobar si el número de argumentos pasados al programa son correctos.
+2) Comprobar si se ha abierto el fichero de configuración (si no, error de apertura del fichero). Si todo ha ido bien,
+   se procesa el fichero de configuración mediante procesarFichConf (que inserta los nodos y enlaces en las listas). Si
+   diese error, sería en dos formas: error de reserva de memoria (e = 1) o de fichero de configuración (e = NOERROR
+   y el valor de devolución de la función procesarFichConf es NOERROR también).
+3) Luego se realiza comprobaciones de apertura del fichero de entrada y el de salida (si no se han podido abrir,
+   error de apertura de ficheros).
+4) Más tarde, se procesa el fichero de entrada, con la bandera de errores pasada como parámetro a la función
+   procesarFichEnt (esta establece los nodos inicial y final), y si diese error sería de reserva de memoria.
+5) Realizar el cálculo de costo entre caminos (función calculoCaminos), luego conseguir el camino óptimo (función
+   caminoOptimo) y finalmente imprimirlo (función salidaFichSal).
+6) Cerrar ficheros y liberar las listas de enlaces y nodos.
+
+---------------------------------
+- nodos.c                       -
+---------------------------------
+Contiene todas las funciones relativas al manejo de nodos individuales y listas de nodos.
+
+De este archivo habría que destacar las siguientes funciones:
+-nodosSonIguales:	Comprueba si dos nodos son iguales (tienen la misma IP).
+-insertaPasoDeSolucion:	Inserta un paso de la solución. Teniendo en cuenta que el último paso que se inserta es el
+			primer paso, hay que insertar cada vez el paso anterior del actual para que siga una estructura
+			de tipo nodo->sig.
+-manejaNodo:		Comprueba si existe un nodo ya (útil para evitar duplicados). Si se ha encontrado, se libera
+			de la memoria el nodo creado y se guarda el puntero del encontrado. Si NO se ha encontrado,
+			se inserta en la lista de nodos.
+-insertaIPEnNodo:	Inserta una IP que en formato de tabla de caracteres. Se supone que tiene formato correcto
+			(debe comprobarse antes de llamar a esta función). Luego se realiza la inserción mediante sscanf.
+
+---------------------------------
+- nodos.h                       -
+---------------------------------
+Contiene a las constantes simbólicas y a los tipos asociados definidos (y también declaración de los prototipos
+de funciones).
+
+El de especial relevancia el tipo "nodo", que tiene la estructura siguiente:
+-coste:		El costo desde este nodo hasta el nodo inicial
+-ip:		La dirección IP del nodo (del tipo direccion que se define en este fichero).
+-sigEnganche:	El siguiente elemento en la lista de los nodos según su creación (se van "enganchando" aquí).
+-sig:		El siguiente elemento solucion del camino óptimo.
+-pred:		El elemento anterior solución del camino óptimo (es el primero que se calcula, y luego se pasa sus
+		elementos a sig).
+
+---------------------------------
+- enlaces.c                     -
+---------------------------------
+Contiene todas las funciones relativas al manejo de enlaces individuales y listas de enlaces.
+
+De este archivo habría que destacar las siguientes funciones:
+-configuraEnlace:	Comprueba si un enlace tiene IPs y peso correctos, luego comprueba si ya existe un enlace igual
+			(con las mismas IPs). Si no existe se inserta en la lista de enlaces y devuelve un 1 ("OK"). Si
+			resulta que SÍ existe, se devuelve un 0 (como que no es correcto).
+-consiguePesoDeEnlace:	Devuelve el costo de ir a un nodo "inicio" a otro nodo "destino". Si encuentra
+			relación supone un peso infinito.
+-existeEnlace:		Comprueba si existe un enlace igual en la lista de estos (las IPs de sus nodos coinciden).
+-mismoEnlace:		Comprueba si un enlace es el mismo (las IPs de sus nodos coinciden).
+
+---------------------------------
+- enlaces.h                     -
+---------------------------------
+Contiene a las constantes simbólicas y a los tipos asociados definidos (y también declaración de los prototipos
+de funciones).
+
+El de especial relevancia el tipo "enlace", que tiene la estructura siguiente:
+-peso:		El peso del enlace.
+-origen:	El nodo origen del enlace.
+-destino:	El nodo destino del enlace.
+-sig:		El siguiente enlace en la lista de estos (que se van metiendo según son creados).
+
+---------------------------------
+- io.c                          -
+---------------------------------
+Contiene todas las funciones relativas al manejo de ficheros de entrada y salida (escritura y lectura).
+
+Las funciones que se encuentran en este archivo .c son las siguientes (todas de especial relevancia):
+-procesarFichEnt:	Procesa el fichero de entrada, estableciendo, de la lista de nodos (buscando y encontrando),
+			el nodo inicial y el final para encontrar el camino óptimo entre estos.
+-procesarFichConf:	Lee líneas individuales (una a una) del fichero de configuración. Crea los nodos y enlaces
+			necesarios (dos nodos y un enlace). Inserta las IPs en los dos nodos y luego llama a
+			la función manejaNodo para ambos, de forma que si están duplicados ya se habrán liberado
+			de la memoria y el nodo devuelto es el que ya existía de antes. Luego se procede a configurar
+			el enlace con la función configuraEnlace, y si el enlace es incorrecto esta función devuelve
+			0 (error de fichero de configuración) y libera el enlace. Si no se ha podido reservar
+			dinámicamente un nodo o un enlace se activa e (e = 1), dando error de reserva de memoria.
+-salidaFichSal:		Imprime la solución en el fichero de salida en el formato solicitado. Empieza con una cabecera
+			y luego imprime el paso a paso que realiza.
+
+---------------------------------
+- calculo.c                     -
+---------------------------------
+Contiene las funciones que realizan el cálculo de rutas.
+
+Las funciones que contiene son las siguientes:
+-calculoCaminos:	Realiza el cálculo de pesos de todas las rutas desde el nodo inicial hasta el final,
+			formando el camino óptimo entre estos.
+-caminoOptimo:		Convierte el camino calculado anteriormente, que se tenía listado inversamente (el último
+			es el primer elemento), en una lista consecutiva (es decir, que el primero pasa a ser el
+			primero del camino óptimo, y el último el último).
+

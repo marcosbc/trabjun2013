@@ -34,6 +34,9 @@ void insertaEnLista(nodo * p, nodo ** pp);
 // Libera toda una lista
 void liberaLista(nodo ** pp);
 
+// Libera un nodo individual
+void liberaNodo(nodo ** pp);
+
 // Inserta un paso de la solución final
 void insertaPasoDeSolucion(nodo ** pp, nodo ** pq);
 

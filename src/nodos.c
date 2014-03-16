@@ -96,8 +96,15 @@ void liberaLista(nodo ** pp)
 		paux = *pp;
 		*pp = paux->sigEnganche;
 		
-		liberaNodo(paux);
+		liberaNodo(&paux);
 	}
+}
+
+// Libera un nodo individual
+void liberaNodo(nodo ** pp)
+{
+	free(*pp);
+	pp = NULL;
 }
 
 // Inserta un paso de la solución final (teniendo en cuenta que
@@ -136,7 +143,7 @@ void manejaNodo(nodo ** pp, nodo ** pq)
 	if(encontrado)
 	{
 		// Lo liberamos de la memoria
-		liberaNodo(*pp);
+		liberaNodo(pp);
 		
 		// Cambiamos el puntero a que sea el del nodo encontrado
 		*pp = *pq;

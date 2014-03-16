@@ -154,6 +154,16 @@ void liberaEnlaces(enlace ** pe)
 	{
 		eaux = *pe;
 		*pe = eaux->sig;
+
+		// Proceder a la liberación
 		free(eaux);
+		eaux = NULL;
 	}
+}
+
+// Libera un enlace individual
+void liberaEnlace(enlace ** pe)
+{
+	free(pe);
+	pe = NULL;
 }

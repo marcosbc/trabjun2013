@@ -168,8 +168,8 @@ int procesarFichConf(FILE * fich, enlace ** enlaces,
 			// No se ha usado los nodos, así que liberarlos
 			if(! ipCorrectas)
 			{
-				liberaNodo(nodo1);
-				liberaNodo(nodo2);
+				liberaNodo(&nodo1);
+				liberaNodo(&nodo2);
 			}
 
 			// No se han usado los enlaces o bien el fichero de
@@ -177,7 +177,7 @@ int procesarFichConf(FILE * fich, enlace ** enlaces,
 			if(! enlaceOK)
 			{
 				// No se ha usado el enlace: Liberarlo
-				liberaEnlace(enlaceAInsertar);
+				liberaEnlace(&enlaceAInsertar);
 
 				// Error de fichero de configuración: No ha habido
 				// datos suficientes (argumentos para sscanf)
