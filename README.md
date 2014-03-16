@@ -21,7 +21,7 @@ We'll need three files (all in plain text format):
 
 These will be passed to the shell in the following way:
 ```
-./trabjun2013 configuration.txt entrada.txt salida.txt
+./trabjun2013 configuracion.txt entrada.txt salida.txt
 ```
 
 File examples
